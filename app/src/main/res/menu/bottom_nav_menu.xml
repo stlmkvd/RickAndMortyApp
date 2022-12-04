@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/nav_item_characters"
+        android:title="characters"
+        android:icon="@drawable/ic_baseline_face_24"/>
+
+    <item android:id="@+id/nav_item_locations"
+        android:title="locations"
+        android:icon="@drawable/ic_baseline_image_24"/>
+
+    <item android:id="@+id/nav_item_episodes"
+        android:title="episodes"
+        android:icon="@drawable/ic_baseline_import_contacts_24"/>
+
+</menu>
