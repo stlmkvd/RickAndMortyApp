@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/nav_item_characters"
-        android:title="characters"
+    <item android:id="@+id/nav_item_personages"
+        android:title="personages"
         android:icon="@drawable/ic_baseline_face_24"/>
 
     <item android:id="@+id/nav_item_locations"

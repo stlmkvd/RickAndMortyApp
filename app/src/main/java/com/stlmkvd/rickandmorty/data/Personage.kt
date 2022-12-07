@@ -21,4 +21,7 @@ data class Personage(
     @SerializedName("episode") var episodeUrls: List<String>,
     var url: String,
     var created: Date
-) : DataItem
+) : DataItem {
+    val imageFileName: String
+        get() = "personage_$id.jpg"
+}

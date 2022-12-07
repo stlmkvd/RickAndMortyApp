@@ -6,10 +6,10 @@ import com.stlmkvd.rickandmorty.Repository
 import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.data.ItemsProvider
 
-class PersonageViewModel : ViewModel() {
+class PersonagesViewModel : ViewModel() {
 
     private val repository = Repository.getInstance()
-    val personagesProvider = ItemsProvider<Personage>() {
+    private val personagesProvider = ItemsProvider<Personage>() {
         repository.getPersonagesPagedSync(it)
     }
 
@@ -17,8 +17,8 @@ class PersonageViewModel : ViewModel() {
         return personagesProvider.getItemAt(position)
     }
 
-    fun loadImageSync(url: String): Bitmap {
-        return repository.downloadImageSync(url)
+    fun loadImageSync(url: String, name: String): Bitmap? {
+        return repository.loadImageSync(url, name)
     }
 
     fun getItemCount(): Int {

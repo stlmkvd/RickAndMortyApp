@@ -8,12 +8,19 @@ import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.database.AppDatabase
 import com.stlmkvd.rickandmorty.network.RickAndMortyApi
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
 
 private const val BASE_URL = "https://rickandmortyapi.com/api"
 private const val TAG = "Repository"
+private const val FOLDER_IMAGES = "images"
 
 class Repository private constructor(context: Context) {
+
+    private val imagesDir = context.applicationContext.getDir(FOLDER_IMAGES, Context.MODE_PRIVATE)
+
     private val db =
         Room.databaseBuilder(context, AppDatabase::class.java, "items_database").build()
     private val rickAndMortyService by lazy { RickAndMortyApi.service }
@@ -38,7 +45,7 @@ class Repository private constructor(context: Context) {
         } else listOf()
     }
 
-    fun getLocationsPageSync(page: Int? = null): List<Location> {
+    fun getLocationsPagedSync(page: Int? = null): List<Location> {
         return rickAndMortyService.getLocationsPage(page).execute().body()?.locations ?: listOf()
     }
 
@@ -47,12 +54,30 @@ class Repository private constructor(context: Context) {
             ?: listOf()
     }
 
-    fun downloadImageSync(imageUrl: String): Bitmap {
-        try {
-            return BitmapFactory.decodeStream(rickAndMortyService.downloadImage(imageUrl).execute().body()?.byteStream())
-        }catch (e: IOException) {
-            throw IOException("ERROR DURING DOWNLOADING IMAGE")
+    fun loadImageSync(imageUrl: String, name: String): Bitmap? {
+        var bitmap: Bitmap? = try {
+            BitmapFactory.decodeStream(
+                rickAndMortyService.downloadImage(imageUrl).execute().body()?.byteStream()
+            )
+        } catch (e: java.lang.Exception) {
+            null
         }
+        if (bitmap != null) {
+            saveImageToStorage(name, bitmap)
+        } else bitmap = loadImageFromStorage(name)
+        return bitmap
+    }
+
+    private fun loadImageFromStorage(name: String): Bitmap? {
+        val imageFile = imagesDir.listFiles()?.find { it.name == name } ?: return null
+        return BitmapFactory.decodeStream(FileInputStream(imageFile))
+    }
+
+    private fun saveImageToStorage(name: String, bitmap: Bitmap) {
+        val file = File(imagesDir, name)
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        file.writeBytes(baos.toByteArray())
     }
 
     companion object {

@@ -1,16 +1,11 @@
 package com.stlmkvd.rickandmorty
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.google.gson.reflect.TypeToken
-import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.databinding.ActivityMainBinding
-import com.stlmkvd.rickandmorty.network.gson
+import com.stlmkvd.rickandmorty.fragments.overviews.LocationsOverviewFragment
+import com.stlmkvd.rickandmorty.fragments.overviews.PersonagesOverviewFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,5 +14,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            menuitem ->
+            when(menuitem.itemId) {
+                R.id.nav_item_personages -> supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, PersonagesOverviewFragment::class.java, null)
+                    .commit()
+                R.id.nav_item_locations -> supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, LocationsOverviewFragment::class.java, null)
+                    .commit()
+                else -> throw java.lang.UnsupportedOperationException()
+            }
+            true
+        }
     }
 }

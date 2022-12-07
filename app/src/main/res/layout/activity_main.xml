@@ -22,7 +22,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container"
-            android:name="com.stlmkvd.rickandmorty.fragments.overviews.PersonagesFragment"
+            android:name="com.stlmkvd.rickandmorty.fragments.overviews.PersonagesOverviewFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/gray"

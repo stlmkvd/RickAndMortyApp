@@ -11,31 +11,29 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.stlmkvd.rickandmorty.R
 import com.stlmkvd.rickandmorty.data.ItemsProvider
+import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.databinding.FragmentPersonagesBinding
+import com.stlmkvd.rickandmorty.databinding.ViewholderLocationBinding
 import com.stlmkvd.rickandmorty.databinding.ViewholderPersonageBinding
-import com.stlmkvd.rickandmorty.models.PersonagesViewModel
+import com.stlmkvd.rickandmorty.models.LocationsViewModel
 import java.util.concurrent.Executors
 
-private const val TAG = "PersonagesFragment"
+class LocationsOverviewFragment : Fragment() {
 
-class PersonagesOverviewFragment : Fragment() {
-
-    private lateinit var viewModel: PersonagesViewModel
+    private lateinit var viewModel: LocationsViewModel
     private lateinit var binding: FragmentPersonagesBinding
-    private lateinit var handler: Handler
-    private lateinit var adapter: PersonageAdapter
+    private lateinit var adapter: LocationsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this).get(PersonagesViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(LocationsViewModel::class.java)
         binding = FragmentPersonagesBinding.inflate(inflater, container, false)
         binding.recycler.layoutManager = GridLayoutManager(requireContext(), 2)
-        adapter = PersonageAdapter()
+        adapter = LocationsAdapter()
         binding.recycler.adapter = adapter
         viewModel.registerDataSetChangesCallback(adapter)
         return binding.root
@@ -49,20 +47,20 @@ class PersonagesOverviewFragment : Fragment() {
 
 
 
-    inner class PersonageAdapter : RecyclerView.Adapter<PersonageAdapter.PersonageViewHolder>(),
+    inner class LocationsAdapter : RecyclerView.Adapter<LocationsAdapter.LocationViewHolder>(),
         ItemsProvider.CallBack {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonageViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
             val binding =
-                ViewholderPersonageBinding.inflate(
+                ViewholderLocationBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-            return PersonageViewHolder(binding)
+            return LocationViewHolder(binding)
         }
 
-        override fun onBindViewHolder(holder: PersonageViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
             holder.bind(viewModel.getItemAt(position))
         }
 
@@ -74,24 +72,12 @@ class PersonagesOverviewFragment : Fragment() {
             notifyItemRangeInserted(start, count)
         }
 
-        inner class PersonageViewHolder(private val binding: ViewholderPersonageBinding) :
+        inner class LocationViewHolder(private val binding: ViewholderLocationBinding) :
             RecyclerView.ViewHolder(binding.root) {
 
-            fun bind(personage: Personage) {
-                binding.personage = personage
-                binding.image.setImageResource(R.drawable.black_fill)
+            fun bind(location: Location) {
+                binding.location = location
                 binding.executePendingBindings()
-                var image: Bitmap? = null
-                val handler = Handler(Looper.getMainLooper()) {
-                    if (image != null) {
-                        binding.image.setImageBitmap(image)
-                    }
-                    true
-                }
-                Executors.newSingleThreadExecutor().execute {
-                    image = viewModel.loadImageSync(personage.imageUrl, personage.imageFileName)
-                    handler.sendEmptyMessage(1)
-                }
             }
         }
     }
