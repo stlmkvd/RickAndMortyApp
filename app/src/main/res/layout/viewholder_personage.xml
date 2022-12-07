@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="personage"
+            type="com.stlmkvd.rickandmorty.data.Personage" />
+    </data>
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -29,7 +35,7 @@
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name"
+                android:text="@{personage.name}"
                 app:layout_constraintBottom_toTopOf="@+id/tv_species"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -40,7 +46,7 @@
                 android:id="@+id/tv_species"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="species"
+                android:text="@{personage.species}"
                 app:layout_constraintBottom_toTopOf="@+id/tv_status"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -51,7 +57,7 @@
                 android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="status"
+                android:text="@{personage.status}"
                 app:layout_constraintBottom_toTopOf="@+id/tv_gender"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +67,7 @@
                 android:id="@+id/tv_gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="gender"
+                android:text="@{personage.gender}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"

@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.reflect.TypeToken
 import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.network.gson
+import java.net.URL
 import java.util.Date
 
 class Converters {
@@ -37,4 +38,26 @@ class Converters {
     fun dateFromLong(time: Long): Date {
         return Date(time)
     }
+
+    @TypeConverter
+    fun toJsonString(url: URL?): String {
+        return gson.toJson(url)
+    }
+
+    @TypeConverter
+    fun urlFromJsonString(string: String?): URL? {
+        return gson.fromJson(string, URL::class.java)
+    }
+
+    @TypeConverter
+    fun urlListToJsonString(list: List<URL>?): String {
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun urlListFromJsonString(string: String): List<URL?> {
+        val type = object : TypeToken<List<URL?>>() {}.type
+        return gson.fromJson(string, type)
+    }
+
 }
