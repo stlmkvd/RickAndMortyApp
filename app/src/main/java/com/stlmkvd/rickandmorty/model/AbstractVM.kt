@@ -1,17 +1,20 @@
-package com.stlmkvd.rickandmorty.data
+package com.stlmkvd.rickandmorty.model
 
+import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.lifecycle.ViewModel
+import com.stlmkvd.rickandmorty.Repository
+import com.stlmkvd.rickandmorty.data.DataItem
 import java.util.concurrent.Executors
 import kotlin.properties.Delegates
 
-private const val TAG = "DataItemsProvider"
+private const val TAG = "AbstractVM"
 private const val PAGE_SIZE = 20
 private const val PAGING_THRESHOLD = 10
 
-
-class ItemsProvider<I : DataItem>(private val loader: (page: Int) -> List<I>) {
+abstract class AbstractVM<I : DataItem> : ViewModel() {
 
     private val items: MutableList<I> = mutableListOf()
     private var _state: LoadingState = LoadingState.READY
@@ -23,27 +26,28 @@ class ItemsProvider<I : DataItem>(private val loader: (page: Int) -> List<I>) {
 
     private fun loadNextPageAsync() {
         if (_state == LoadingState.BUSY || _state == LoadingState.END) return
-        Log.d(TAG, "loadNextPageAsync()")
         _state = LoadingState.BUSY
         val startPosition = items.size
         val nextPage = items.size / PAGE_SIZE + 1
-        var loadedCount: Int by Delegates.notNull()
+        var loadedItems: List<I> by Delegates.notNull()
         val handler = Handler(Looper.getMainLooper()) {
-            callbacks.forEach { it.itemsAdded(startPosition, loadedCount) }
-            Log.d(TAG, "handler fired! loadedCount: $loadedCount")
+            items.addAll(loadedItems)
+            callbacks.forEach { it.itemsAdded(startPosition, loadedItems.size) }
+            _state =
+                if (loadedItems.size < PAGING_THRESHOLD) LoadingState.END
+                else LoadingState.READY
             true
         }
         Executors.newSingleThreadExecutor()
             .execute {
-                val loadedItems = loader.invoke(nextPage)
-                loadedCount = loadedItems.size
-                items.addAll(loadedItems)
+                loadedItems = loadPage(nextPage)
                 handler.sendEmptyMessage(1)
-                _state =
-                    if (loadedCount < PAGING_THRESHOLD) LoadingState.END
-                    else LoadingState.READY
             }
     }
+
+    abstract fun loadPage(page: Int): List<I>
+
+    abstract fun loadItemsByIds(ids: List<Int>): List<I>
 
     fun getItemAt(position: Int): I {
         if (position >= getItemCount() - PAGING_THRESHOLD) {
@@ -56,6 +60,7 @@ class ItemsProvider<I : DataItem>(private val loader: (page: Int) -> List<I>) {
         return items.size
     }
 
+
     fun registerCallback(callBack: CallBack) {
         callbacks.add(callBack)
     }
@@ -64,6 +69,9 @@ class ItemsProvider<I : DataItem>(private val loader: (page: Int) -> List<I>) {
         callbacks.remove(callBack)
     }
 
+    fun loadImageSync(url: String, name: String): Bitmap? {
+        return Repository.getInstance().loadImageSync(url, name)
+    }
 
     private enum class LoadingState {
         READY, BUSY, END
@@ -73,7 +81,3 @@ class ItemsProvider<I : DataItem>(private val loader: (page: Int) -> List<I>) {
         fun itemsAdded(start: Int, count: Int)
     }
 }
-
-
-
-

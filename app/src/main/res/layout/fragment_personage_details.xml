@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="personage"
+            type="com.stlmkvd.rickandmorty.data.Personage" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{personage.name}"
+            app:layout_constraintBottom_toTopOf="@+id/tv_status"
+            app:layout_constraintEnd_toEndOf="@+id/tv_status"
+            app:layout_constraintStart_toStartOf="@+id/tv_status"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{personage.status}"
+            app:layout_constraintBottom_toTopOf="@+id/tv_species"
+            app:layout_constraintEnd_toEndOf="@+id/tv_species"
+            app:layout_constraintStart_toStartOf="@+id/tv_species"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+        <TextView
+            android:id="@+id/tv_species"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{personage.species}"
+            app:layout_constraintBottom_toTopOf="@+id/tv_type"
+            app:layout_constraintEnd_toEndOf="@+id/tv_type"
+            app:layout_constraintStart_toStartOf="@+id/tv_type"
+            app:layout_constraintTop_toBottomOf="@+id/tv_status" />
+
+        <TextView
+            android:id="@+id/tv_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{personage.type}"
+            app:layout_constraintBottom_toTopOf="@+id/tv_origin"
+            app:layout_constraintEnd_toEndOf="@+id/tv_origin"
+            app:layout_constraintStart_toStartOf="@+id/tv_origin"
+            app:layout_constraintTop_toBottomOf="@+id/tv_species" />
+
+        <TextView
+            android:id="@+id/tv_origin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{personage.origin.name}"
+            app:layout_constraintBottom_toTopOf="@+id/tv_location"
+            app:layout_constraintEnd_toEndOf="@+id/tv_location"
+            app:layout_constraintStart_toStartOf="@+id/tv_location"
+            app:layout_constraintTop_toBottomOf="@+id/tv_type" />
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{personage.location.name}"
+            app:layout_constraintBottom_toTopOf="@+id/tv_image"
+            app:layout_constraintEnd_toEndOf="@+id/tv_image"
+            app:layout_constraintStart_toStartOf="@+id/tv_image"
+            app:layout_constraintTop_toBottomOf="@+id/tv_origin" />
+
+        <TextView
+            android:id="@+id/tv_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{personage.imageUrl}"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_episodes"
+            app:layout_constraintEnd_toEndOf="@+id/recycler_episodes"
+            app:layout_constraintStart_toStartOf="@+id/recycler_episodes"
+            app:layout_constraintTop_toBottomOf="@+id/tv_location" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_episodes"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_image" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

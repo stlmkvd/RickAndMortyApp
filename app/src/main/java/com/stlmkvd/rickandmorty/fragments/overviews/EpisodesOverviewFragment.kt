@@ -9,27 +9,28 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.stlmkvd.rickandmorty.adapters.recycler.AbstractAdapter
-import com.stlmkvd.rickandmorty.adapters.recycler.LocationsAdapter
-import com.stlmkvd.rickandmorty.databinding.FragmentPersonagesBinding
-import com.stlmkvd.rickandmorty.model.LocationsViewModel
+import com.stlmkvd.rickandmorty.adapters.recycler.EpisodesAdapter
+import com.stlmkvd.rickandmorty.databinding.FragmentEpisodesBinding
+import com.stlmkvd.rickandmorty.model.EpisodesViewModel
 
-class LocationsOverviewFragment : Fragment() {
+class EpisodesOverviewFragment
+    : Fragment() {
 
-    private lateinit var viewModel: LocationsViewModel
-    private lateinit var binding: FragmentPersonagesBinding
-    private lateinit var adapter: LocationsAdapter
+    private lateinit var viewModel: EpisodesViewModel
+    private lateinit var binding: FragmentEpisodesBinding
+    private lateinit var adapter: EpisodesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this).get(LocationsViewModel::class.java)
-        binding = FragmentPersonagesBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this).get(EpisodesViewModel::class.java)
+        binding = FragmentEpisodesBinding.inflate(inflater, container, false)
         binding.recycler.layoutManager = GridLayoutManager(requireContext(), 2)
-        adapter = LocationsAdapter(viewModel)
+        adapter = EpisodesAdapter(viewModel)
         binding.recycler.adapter = adapter
         adapter.onItemClickListener = AbstractAdapter.OnItemClickListener {
-            Toast.makeText(requireContext(), "location ${it.id} clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "episode ${it.id} clicked", Toast.LENGTH_SHORT).show()
         }
         return binding.root
     }

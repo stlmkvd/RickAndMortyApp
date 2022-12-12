@@ -3,7 +3,9 @@ package com.stlmkvd.rickandmorty
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.room.Room
+import com.stlmkvd.rickandmorty.data.Episode
 import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.database.AppDatabase
@@ -29,9 +31,9 @@ class Repository private constructor(context: Context) {
         var personages: List<Personage>?
         try {
             personages = rickAndMortyService.getPersonagesPage(page).execute().body()?.personages
-            personages?.let { db.rickAndMortyDao().insertAll(it) }
+            personages?.let { db.personagesDao().insertAll(it) }
         } catch (e: IOException) {
-            personages = db.rickAndMortyDao().getPersonagesPaged(page)
+            personages = db.personagesDao().getPersonagesPaged(page)
         }
         return personages ?: emptyList()
     }
@@ -40,18 +42,40 @@ class Repository private constructor(context: Context) {
         val personages: List<Personage>? =
             rickAndMortyService.getPersonagesByIds(ids.joinToString()).execute().body()
         return if (personages != null) {
-            db.rickAndMortyDao().insertAll(personages)
+            db.personagesDao().insertAll(personages)
             personages
         } else listOf()
     }
 
-    fun getLocationsPagedSync(page: Int? = null): List<Location> {
-        return rickAndMortyService.getLocationsPage(page).execute().body()?.locations ?: listOf()
+    fun getLocationsPagedSync(page: Int): List<Location> {
+        var locations: List<Location>?
+        try {
+            locations = rickAndMortyService.getLocationsPage(page).execute().body()?.locations
+            locations?.let { db.locationsDao().insertAll(it) }
+        } catch (e: IOException) {
+            locations = db.locationsDao().getLocationsPaged(page)
+            Log.d(TAG, "loaded from db: ${locations?.size}")
+        }
+        return locations ?: emptyList()
     }
 
-    fun getLocationsByIdsSync(vararg ids: Int): List<Location> {
-        return rickAndMortyService.getLocationsByIds(ids.joinToString()).execute().body()
-            ?: listOf()
+    fun getLocationsByIdsSync(ids: List<Int>): List<Location> {
+        return TODO()
+    }
+
+    fun getEpisodesPagedSync(page: Int): List<Episode> {
+        var episodes: List<Episode>?
+        try {
+            episodes = rickAndMortyService.getEpisodesPage(page).execute().body()?.episodes
+            episodes?.let { db.episodesDao().insertAll(it) }
+        } catch (e: IOException) {
+            episodes = db.episodesDao().getEpisodesPaged(page)
+        }
+        return episodes ?: listOf()
+    }
+
+    fun getEpisodesByIds(ids: List<Int>): List<Episode> {
+        return TODO()
     }
 
     fun loadImageSync(imageUrl: String, name: String): Bitmap? {
