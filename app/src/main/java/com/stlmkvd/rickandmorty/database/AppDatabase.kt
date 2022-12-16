@@ -9,7 +9,6 @@ import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.database.dao.EpisodesDao
 import com.stlmkvd.rickandmorty.database.dao.LocationsDao
 import com.stlmkvd.rickandmorty.database.dao.PersonagesDao
-import com.stlmkvd.rickandmorty.database.typeconverters.Converters
 
 @Database(
     entities = [Personage::class, Location::class, Episode::class],

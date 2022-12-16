@@ -1,9 +1,16 @@
 package com.stlmkvd.rickandmorty
 
+import android.app.Activity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import com.stlmkvd.rickandmorty.databinding.ActivityMainBinding
 import com.stlmkvd.rickandmorty.fragments.details.PersonagesDetailsFragment
 import com.stlmkvd.rickandmorty.fragments.overviews.EpisodesOverviewFragment
@@ -18,9 +25,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setSupportActionBar(binding.toolbar)
     }
 
     override fun onStart() {
@@ -62,4 +71,9 @@ class MainActivity : AppCompatActivity() {
             TODO()
         }
     }
+}
+
+fun Activity.setMenuProvider(menuProvider: MenuProvider, lifecycleOwner: LifecycleOwner) {
+    val menuHost = this as MenuHost
+    menuHost.addMenuProvider(menuProvider, lifecycleOwner)
 }

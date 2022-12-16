@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.stlmkvd.rickandmorty.R
 import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.databinding.ViewholderPersonageBinding
-import com.stlmkvd.rickandmorty.model.AbstractVM
 import com.stlmkvd.rickandmorty.model.PersonagesViewModel
 import java.util.concurrent.Executors
 

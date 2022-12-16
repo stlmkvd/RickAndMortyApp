@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.databinding.ViewholderLocationBinding
-import com.stlmkvd.rickandmorty.model.AbstractVM
 import com.stlmkvd.rickandmorty.model.LocationsViewModel
 
 

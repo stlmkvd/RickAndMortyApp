@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.room.Room
+import com.stlmkvd.rickandmorty.data.DataItem
 import com.stlmkvd.rickandmorty.data.Episode
 import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.data.Personage
@@ -27,14 +28,27 @@ class Repository private constructor(context: Context) {
         Room.databaseBuilder(context, AppDatabase::class.java, "items_database").build()
     private val rickAndMortyService by lazy { RickAndMortyApi.service }
 
+    fun getItemsPaged(page: Int, clazz: Class<out DataItem>): List<DataItem> {
+        return when(clazz) {
+            Personage::class.java -> getPersonagesPagedSync(page)
+            Location::class.java -> getLocationsPagedSync(page)
+            Episode::class.java -> getEpisodesPagedSync(page)
+            else -> throw IllegalArgumentException("no such type supported")
+        }
+    }
+
     fun getPersonagesPagedSync(page: Int): List<Personage> {
-        var personages: List<Personage>?
+        Log.d(TAG, "personage page: $page")
+        var personages: List<Personage>? = null
         try {
             personages = rickAndMortyService.getPersonagesPage(page).execute().body()?.personages
-            personages?.let { db.personagesDao().insertAll(it) }
         } catch (e: IOException) {
-            personages = db.personagesDao().getPersonagesPaged(page)
+
         }
+
+        if (personages != null) db.personagesDao().insertAll(personages)
+        else personages = db.personagesDao().getPersonagesPaged(page)
+
         return personages ?: emptyList()
     }
 
@@ -48,14 +62,17 @@ class Repository private constructor(context: Context) {
     }
 
     fun getLocationsPagedSync(page: Int): List<Location> {
-        var locations: List<Location>?
+        var locations: List<Location>? = null
         try {
             locations = rickAndMortyService.getLocationsPage(page).execute().body()?.locations
-            locations?.let { db.locationsDao().insertAll(it) }
         } catch (e: IOException) {
-            locations = db.locationsDao().getLocationsPaged(page)
-            Log.d(TAG, "loaded from db: ${locations?.size}")
+
         }
+
+        if (locations != null) {
+            db.locationsDao().insertAll(locations)
+        } else locations = db.locationsDao().getLocationsPaged(page)
+
         return locations ?: emptyList()
     }
 
@@ -64,13 +81,15 @@ class Repository private constructor(context: Context) {
     }
 
     fun getEpisodesPagedSync(page: Int): List<Episode> {
-        var episodes: List<Episode>?
+        var episodes: List<Episode>? = null
         try {
             episodes = rickAndMortyService.getEpisodesPage(page).execute().body()?.episodes
-            episodes?.let { db.episodesDao().insertAll(it) }
         } catch (e: IOException) {
-            episodes = db.episodesDao().getEpisodesPaged(page)
         }
+
+        if (episodes != null) db.episodesDao().insertAll(episodes)
+        else episodes = db.episodesDao().getEpisodesPaged(page)
+
         return episodes ?: listOf()
     }
 

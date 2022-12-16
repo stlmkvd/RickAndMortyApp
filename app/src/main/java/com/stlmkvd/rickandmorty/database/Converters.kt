@@ -1,4 +1,4 @@
-package com.stlmkvd.rickandmorty.database.typeconverters
+package com.stlmkvd.rickandmorty.database
 
 import androidx.room.TypeConverter
 import com.google.gson.reflect.TypeToken

@@ -26,8 +26,8 @@ private const val BASE_URL = "https://rickandmortyapi.com/api/"
 val gson: Gson =
     GsonBuilder()
         .serializeNulls()
-        .registerTypeAdapter(URL::class.java, NullableUrlTypeAdapter)
-        .registerTypeAdapter(String::class.java, NullableStringTypeAdapter)
+//        .registerTypeAdapter(URL::class.java, NullableUrlTypeAdapter)
+//        .registerTypeAdapter(String::class.java, NullableStringTypeAdapter)
         .create()
 
 private val retrofit = Retrofit.Builder()

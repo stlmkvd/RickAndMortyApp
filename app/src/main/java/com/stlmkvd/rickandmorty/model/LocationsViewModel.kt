@@ -3,7 +3,7 @@ package com.stlmkvd.rickandmorty.model
 import com.stlmkvd.rickandmorty.Repository
 import com.stlmkvd.rickandmorty.data.Location
 
-class LocationsViewModel : AbstractVM<Location>() {
+class LocationsViewModel : AbstractRickAndMortyVM<Location>() {
 
     override fun loadPage(page: Int): List<Location> {
         return Repository.getInstance().getLocationsPagedSync(page)

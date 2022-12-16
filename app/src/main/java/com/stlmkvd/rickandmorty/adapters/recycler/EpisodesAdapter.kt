@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.stlmkvd.rickandmorty.data.Episode
 import com.stlmkvd.rickandmorty.databinding.ViewholderEpisodeBinding
-import com.stlmkvd.rickandmorty.model.AbstractVM
 import com.stlmkvd.rickandmorty.model.EpisodesViewModel
 
 class EpisodesAdapter(private val viewModel: EpisodesViewModel) : AbstractAdapter<Episode>(viewModel) {
