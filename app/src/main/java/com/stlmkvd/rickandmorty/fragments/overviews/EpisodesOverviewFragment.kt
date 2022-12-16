@@ -12,17 +12,16 @@ import com.stlmkvd.rickandmorty.R
 import com.stlmkvd.rickandmorty.adapters.recycler.AbstractAdapter
 import com.stlmkvd.rickandmorty.adapters.recycler.EpisodesAdapter
 import com.stlmkvd.rickandmorty.data.Episode
-import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.databinding.FragmentItemsListBinding
 import com.stlmkvd.rickandmorty.fragments.filters.ARG_SELECTION
 import com.stlmkvd.rickandmorty.fragments.filters.EpisodesFiltersFragment
-import com.stlmkvd.rickandmorty.fragments.filters.LocationsFiltersFragment
 import com.stlmkvd.rickandmorty.fragments.filters.SUBMIT_SELECTIONS_REQUEST_KEY
+import com.stlmkvd.rickandmorty.model.AbstractRickAndMortyVM
 import com.stlmkvd.rickandmorty.model.EpisodesViewModel
 import com.stlmkvd.rickandmorty.setMenuProvider
 
 class EpisodesOverviewFragment
-    : Fragment() {
+    : Fragment(), AbstractRickAndMortyVM.OnRefreshCompleteCallback {
 
     private lateinit var viewModel: EpisodesViewModel
     private lateinit var binding: FragmentItemsListBinding
@@ -67,9 +66,9 @@ class EpisodesOverviewFragment
         binding.swipeRefreshLayout.apply {
             setOnRefreshListener {
                 viewModel.refresh()
-                isRefreshing = false
             }
         }
+        viewModel.registerOnRefreshCompleteCallback(this)
     }
 
     override fun onStart() {
@@ -83,5 +82,14 @@ class EpisodesOverviewFragment
             viewModel.submitFilters(filters)
             binding.slidingLayout.panelState = SlidingUpPanelLayout.PanelState.HIDDEN
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.removeOnRefreshCompleteCallback(this)
+    }
+
+    override fun onRefreshComplete() {
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 }

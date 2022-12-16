@@ -52,9 +52,12 @@ abstract class AbstractRickAndMortyVM<I : DataItem>() : ViewModel() {
     abstract fun loadItemsByIds(ids: List<Int>): List<I>
 
     private fun loadNextPageAsync() {
+        Log.d(TAG, "_state = $_state")
         if (_state == LoadingState.BUSY || _state == LoadingState.END) return
 
         executor.execute {
+
+            Log.d(TAG, "execute page loading")
 
             _state = LoadingState.BUSY
 
@@ -100,13 +103,15 @@ abstract class AbstractRickAndMortyVM<I : DataItem>() : ViewModel() {
         dataChangedCallBacks.forEach { it.onItemsRemoved(0, getItemCount()) }
         itemsRaw.clear()
         itemsFiltered.clear()
+        bitmapPool.clear()
         pagesLoaded = 0
+        submitFilters(null)
+        _state = LoadingState.READY
         loadNextPageAsync()
     }
 
     fun submitFilters(filter: DataItem.FilterSelection<I>?) {
         if (filter == this.filter) {
-            Log.d(TAG, "filters are equal")
             return
         }
         this.filter = filter
