@@ -2,6 +2,7 @@ package com.stlmkvd.rickandmorty.viewholders
 
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import com.stlmkvd.rickandmorty.BitmapProvider
 import com.stlmkvd.rickandmorty.R
 import com.stlmkvd.rickandmorty.data.Personage
@@ -17,11 +18,13 @@ class PersonageViewHolder(private val binding: ViewholderPersonageBinding) :
 
     override fun bind(item: Personage) {
         handler.removeCallbacksAndMessages(null)
-        binding.image.setImageResource(R.drawable.black_fill)
         executor.execute {
             val bitmap = BitmapProvider.loadImageSync(item.imageUrl, item.imageFileName)
             bitmap?.let {
-                handler.post { binding.image.setImageBitmap(it) }
+                handler.post {
+                    binding.progressBar.visibility = View.GONE
+                    binding.image.setImageBitmap(it)
+                }
             }
         }
         binding.personage = item
