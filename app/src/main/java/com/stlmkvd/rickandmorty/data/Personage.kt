@@ -1,6 +1,8 @@
 package com.stlmkvd.rickandmorty.data
 
+import android.graphics.Bitmap
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.*
@@ -8,17 +10,17 @@ import java.util.*
 @Entity
 data class Personage(
     @PrimaryKey val id: Int,
-    var name: String,
-    var status: String,
-    var species: String,
-    var type: String,
-    var gender: String,
-    var origin: Location.Info?,
-    var location: Location.Info?,
+    val name: String,
+    val status: String,
+    val species: String,
+    val type: String,
+    val gender: String,
+    val origin: Location.Info,
+    val location: Location.Info,
     @SerializedName("image") var imageUrl: String,
-    @SerializedName("episode") var episodeUrls: List<String>,
-    var url: String,
-    var created: Date
+    @SerializedName("episode") val episodeUrls: List<String>,
+    override val url: String,
+    val created: Date,
 ) : DataItem {
     val imageFileName: String
         get() = "personage_$id.jpg"
@@ -69,7 +71,6 @@ data class Personage(
             result = 31 * result + genders.hashCode()
             return result
         }
-
     }
 
 

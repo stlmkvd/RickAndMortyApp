@@ -5,8 +5,11 @@ import android.view.ViewGroup
 import com.stlmkvd.rickandmorty.data.Episode
 import com.stlmkvd.rickandmorty.databinding.ViewholderEpisodeBinding
 import com.stlmkvd.rickandmorty.model.EpisodesViewModel
+import com.stlmkvd.rickandmorty.viewholders.AbstractViewHolder
+import com.stlmkvd.rickandmorty.viewholders.EpisodeViewHolder
 
-class EpisodesAdapter(private val viewModel: EpisodesViewModel) : AbstractAdapter<Episode>(viewModel) {
+class EpisodesAdapter(private val viewModel: EpisodesViewModel, urls: List<String>? = null) :
+    AbstractAdapter<Episode>(viewModel, urls) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Episode> {
         val binding =
@@ -16,18 +19,5 @@ class EpisodesAdapter(private val viewModel: EpisodesViewModel) : AbstractAdapte
                 false
             )
         return EpisodeViewHolder(binding)
-    }
-
-
-    inner class EpisodeViewHolder(private val binding: ViewholderEpisodeBinding) :
-       AbstractViewHolder<Episode>(binding.root) {
-
-        override fun bind(item: Episode) {
-            binding.episode = item
-            binding.executePendingBindings()
-            binding.root.setOnClickListener {
-                onItemClickListener?.onClick(item)
-            }
-        }
     }
 }

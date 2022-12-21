@@ -12,7 +12,7 @@ data class Episode(
     @SerializedName("air_date") val airDate: String,
     @SerializedName("episode") val episodeCode: String,
     @SerializedName("characters") val personageUrls: List<String>,
-    val url: String,
+    override val url: String,
     val created: Date
 ) : DataItem {
 

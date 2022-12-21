@@ -6,6 +6,7 @@ import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import java.net.URL
 
+
 object NullableUrlTypeAdapter : TypeAdapter<URL?>() {
     override fun write(out: JsonWriter, value: URL?) {
         out.value(value?.toString())

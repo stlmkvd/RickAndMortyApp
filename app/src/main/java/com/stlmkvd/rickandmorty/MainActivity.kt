@@ -1,10 +1,11 @@
 package com.stlmkvd.rickandmorty
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -12,7 +13,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.stlmkvd.rickandmorty.databinding.ActivityMainBinding
-import com.stlmkvd.rickandmorty.fragments.details.PersonagesDetailsFragment
+import com.stlmkvd.rickandmorty.fragments.details.EpisodeDetailsFragment
+import com.stlmkvd.rickandmorty.fragments.details.LocationDetailsFragment
+import com.stlmkvd.rickandmorty.fragments.details.PersonageDetailsFragment
 import com.stlmkvd.rickandmorty.fragments.overviews.EpisodesOverviewFragment
 import com.stlmkvd.rickandmorty.fragments.overviews.LocationsOverviewFragment
 import com.stlmkvd.rickandmorty.fragments.overviews.PersonagesOverviewFragment
@@ -20,6 +23,10 @@ import com.stlmkvd.rickandmorty.fragments.overviews.PersonagesOverviewFragment
 const val REQUEST_KEY_OPEN_PERSONAGE = "open_personage"
 const val REQUEST_KEY_OPEN_LOCATION = "open_location"
 const val REQUEST_KEY_OPEN_EPISODE = "open_episode"
+
+const val BUNDLE_ARG_PERSONAGE = "PERSONAGE"
+const val BUNDLE_ARG_EPISODE = "EPISODE"
+const val BUNDLE_ARG_LOCATION = "LOCATION"
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setSupportActionBar(binding.toolbar)
+//        setSupportActionBar(binding.toolbar)
     }
 
     override fun onStart() {
@@ -53,7 +60,11 @@ class MainActivity : AppCompatActivity() {
             this
         ) { _, bundle ->
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, PersonagesDetailsFragment::class.java, bundle)
+                .replace(
+                    R.id.fragment_container,
+                    PersonageDetailsFragment.newInstance(bundle),
+                    null
+                )
                 .addToBackStack("open_personage").commit()
         }
 
@@ -61,15 +72,28 @@ class MainActivity : AppCompatActivity() {
             REQUEST_KEY_OPEN_LOCATION,
             this
         ) { _, bundle ->
-            TODO()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, LocationDetailsFragment.newInstance(bundle), null)
+                .addToBackStack("open_location").commit()
         }
 
         supportFragmentManager.setFragmentResultListener(
             REQUEST_KEY_OPEN_EPISODE,
             this
         ) { _, bundle ->
-            TODO()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, EpisodeDetailsFragment.newInstance(bundle), null)
+                .addToBackStack("open_episode").commit()
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        currentFocus?.let {
+            if (it is EditText) it.clearFocus()
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }
 
@@ -77,3 +101,4 @@ fun Activity.setMenuProvider(menuProvider: MenuProvider, lifecycleOwner: Lifecyc
     val menuHost = this as MenuHost
     menuHost.addMenuProvider(menuProvider, lifecycleOwner)
 }
+

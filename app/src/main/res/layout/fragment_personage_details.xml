@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:elevation="8dp">
 
     <data>
+
         <variable
             name="personage"
             type="com.stlmkvd.rickandmorty.data.Personage" />
+
+        <variable
+            name="viewModel"
+            type="com.stlmkvd.rickandmorty.model.LocationsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,82 +20,209 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{personage.name}"
-            app:layout_constraintBottom_toTopOf="@+id/tv_status"
-            app:layout_constraintEnd_toEndOf="@+id/tv_status"
-            app:layout_constraintStart_toStartOf="@+id/tv_status"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/RickAndMorty.Text.BodyMedium.AlignStart"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:text="@{personage.status}"
-            app:layout_constraintBottom_toTopOf="@+id/tv_species"
-            app:layout_constraintEnd_toEndOf="@+id/tv_species"
-            app:layout_constraintStart_toStartOf="@+id/tv_species"
-            app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+            app:layout_constraintBottom_toBottomOf="@+id/tv_species"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/icon_status2"
+            app:layout_constraintTop_toTopOf="@+id/tv_species"
+            tools:text="status" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon_status2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="3dp"
+            android:src="@drawable/status_indicator"
+            android:tint="@{personage.status.equals(&quot;Alive&quot;) ? @color/green : personage.status.equals(&quot;Dead&quot;) ? @color/red : @color/gray}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_status"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/tv_status" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_gender"
+            style="@style/RickAndMorty.Text.BodyMedium.AlignStart"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{personage.gender}"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/icon_gender2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_status"
+            tools:text="gender" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon_gender2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/icon_gender"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_gender"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_gender" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_species"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/RickAndMorty.Text.BodyMedium.AlignStart"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             android:text="@{personage.species}"
-            app:layout_constraintBottom_toTopOf="@+id/tv_type"
-            app:layout_constraintEnd_toEndOf="@+id/tv_type"
-            app:layout_constraintStart_toStartOf="@+id/tv_type"
-            app:layout_constraintTop_toBottomOf="@+id/tv_status" />
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/icon_species2"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_cardHolder"
+            tools:text="poopybutthole" />
 
-        <TextView
-            android:id="@+id/tv_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{personage.type}"
-            app:layout_constraintBottom_toTopOf="@+id/tv_origin"
-            app:layout_constraintEnd_toEndOf="@+id/tv_origin"
-            app:layout_constraintStart_toStartOf="@+id/tv_origin"
-            app:layout_constraintTop_toBottomOf="@+id/tv_species" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_origin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/RickAndMorty.Text.HeadlineSmall"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:text="@{personage.origin.name}"
-            app:layout_constraintBottom_toTopOf="@+id/tv_location"
-            app:layout_constraintEnd_toEndOf="@+id/tv_location"
-            app:layout_constraintStart_toStartOf="@+id/tv_location"
-            app:layout_constraintTop_toBottomOf="@+id/tv_type" />
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_origin_hint"
+            tools:text="Location" />
 
-        <TextView
-            android:id="@+id/tv_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_last_location"
+            style="@style/RickAndMorty.Text.HeadlineSmall"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:text="@{personage.location.name}"
-            app:layout_constraintBottom_toTopOf="@+id/tv_image"
-            app:layout_constraintEnd_toEndOf="@+id/tv_image"
-            app:layout_constraintStart_toStartOf="@+id/tv_image"
-            app:layout_constraintTop_toBottomOf="@+id/tv_origin" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_last_location_hint"
+            tools:text="location
+" />
 
-        <TextView
-            android:id="@+id/tv_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{personage.imageUrl}"
-            app:layout_constraintBottom_toTopOf="@+id/recycler_episodes"
-            app:layout_constraintEnd_toEndOf="@+id/recycler_episodes"
-            app:layout_constraintStart_toStartOf="@+id/recycler_episodes"
-            app:layout_constraintTop_toBottomOf="@+id/tv_location" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon_species2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/icon_species"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_species"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_species"
+            app:layout_constraintVertical_bias="0.5" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_episodes"
-            android:layout_width="match_parent"
+            android:id="@+id/recycler"
+            android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:background="?attr/colorPrimaryVariant"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_image" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hint_seen_at_episodes"
+            tools:listitem="@layout/viewholder_episode" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/avatar_cardHolder"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="90dp"
+            app:cardElevation="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+
+        </androidx.cardview.widget.CardView>
+
+
+        <TextView
+            android:id="@+id/tv_origin_hint"
+            style="@style/RickAndMorty.Text.BodySmall.Italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="First seen at:"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_gender" />
+
+        <TextView
+            android:id="@+id/tv_last_location_hint"
+            style="@style/RickAndMorty.Text.BodySmall.Italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last know location:"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_origin_hint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/tv_origin_hint" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/RickAndMorty.Text.HeadlineSmall"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{personage.name}"
+            app:layout_constraintBottom_toBottomOf="@+id/avatar_cardHolder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/avatar_cardHolder"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="name" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5
+" />
+
+        <TextView
+            android:id="@+id/hint_seen_at_episodes"
+            style="@style/RickAndMorty.Text.BodySmall.Italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Seen at episodes:"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_origin" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

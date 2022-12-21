@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.databinding.ViewholderLocationBinding
 import com.stlmkvd.rickandmorty.model.LocationsViewModel
+import com.stlmkvd.rickandmorty.viewholders.AbstractViewHolder
+import com.stlmkvd.rickandmorty.viewholders.LocationViewHolder
 
 
-class LocationsAdapter(private val viewModel: LocationsViewModel) :
-    AbstractAdapter<Location>(viewModel) {
+class LocationsAdapter(private val viewModel: LocationsViewModel, urls: List<String>? = null) :
+    AbstractAdapter<Location>(viewModel, urls) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Location> {
         val binding =
@@ -18,18 +20,5 @@ class LocationsAdapter(private val viewModel: LocationsViewModel) :
                 false
             )
         return LocationViewHolder(binding)
-    }
-
-
-    inner class LocationViewHolder(private val binding: ViewholderLocationBinding) :
-        AbstractViewHolder<Location>(binding.root) {
-
-        override fun bind(item: Location) {
-            binding.location = item
-            binding.executePendingBindings()
-            binding.root.setOnClickListener {
-                onItemClickListener?.onClick(item)
-            }
-        }
     }
 }

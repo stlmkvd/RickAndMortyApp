@@ -9,7 +9,7 @@ class PersonagesViewModel : AbstractRickAndMortyVM<Personage>() {
         return Repository.getInstance().getPersonagesPagedSync(page)
     }
 
-    override fun loadItemsByIds(ids: List<Int>): List<Personage> {
-        return Repository.getInstance().getPersonagesByIdsSync(ids)
+    override fun loadItemByUrl(url: String): Personage? {
+        return Repository.getInstance().getPersonageByUrlSync(url)
     }
 }

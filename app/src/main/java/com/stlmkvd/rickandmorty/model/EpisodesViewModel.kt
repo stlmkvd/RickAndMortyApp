@@ -9,7 +9,7 @@ class EpisodesViewModel : AbstractRickAndMortyVM<Episode>() {
         return Repository.getInstance().getEpisodesPagedSync(page)
     }
 
-    override fun loadItemsByIds(ids: List<Int>): List<Episode> {
-        return Repository.getInstance().getEpisodesByIds(ids)
+    override fun loadItemByUrl(url: String): Episode? {
+        return Repository.getInstance().getEpisodeByUrlSync(url)
     }
 }

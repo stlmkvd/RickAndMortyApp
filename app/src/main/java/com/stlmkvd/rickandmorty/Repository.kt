@@ -16,7 +16,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 
-private const val BASE_URL = "https://rickandmortyapi.com/api"
 private const val TAG = "Repository"
 private const val FOLDER_IMAGES = "images"
 
@@ -28,21 +27,12 @@ class Repository private constructor(context: Context) {
         Room.databaseBuilder(context, AppDatabase::class.java, "items_database").build()
     private val rickAndMortyService by lazy { RickAndMortyApi.service }
 
-    fun getItemsPaged(page: Int, clazz: Class<out DataItem>): List<DataItem> {
-        return when(clazz) {
-            Personage::class.java -> getPersonagesPagedSync(page)
-            Location::class.java -> getLocationsPagedSync(page)
-            Episode::class.java -> getEpisodesPagedSync(page)
-            else -> throw IllegalArgumentException("no such type supported")
-        }
-    }
-
     fun getPersonagesPagedSync(page: Int): List<Personage> {
-        Log.d(TAG, "personage page: $page")
+        
         var personages: List<Personage>? = null
         try {
             personages = rickAndMortyService.getPersonagesPage(page).execute().body()?.personages
-        } catch (e: IOException) {
+        } catch (e: java.lang.Exception) {
 
         }
 
@@ -52,14 +42,17 @@ class Repository private constructor(context: Context) {
         return personages ?: emptyList()
     }
 
-    fun getPersonagesByIdsSync(ids: List<Int>): List<Personage> {
-        val personages: List<Personage>? =
-            rickAndMortyService.getPersonagesByIds(ids.joinToString()).execute().body()
-        return if (personages != null) {
-            db.personagesDao().insertAll(personages)
-            personages
-        } else listOf()
+    fun getPersonageByUrlSync(url: String): Personage? {
+        var personage: Personage? = null
+        try {
+            personage = rickAndMortyService.getPersonageByUrl(url)
+        }
+        catch (e: java.lang.Exception) { }
+        
+        if (personage == null) personage = db.personagesDao().getPersonageByUrl(url)
+        return personage
     }
+    
 
     fun getLocationsPagedSync(page: Int): List<Location> {
         var locations: List<Location>? = null
@@ -76,9 +69,19 @@ class Repository private constructor(context: Context) {
         return locations ?: emptyList()
     }
 
-    fun getLocationsByIdsSync(ids: List<Int>): List<Location> {
-        return TODO()
+    fun getLocationByUrlSync(url: String): Location? {
+        var location: Location? = null
+        try {
+            location = rickAndMortyService.getLocationByUrl(url)
+        }
+        catch (e: java.lang.Exception) {
+            Log.e(TAG, e?.localizedMessage.toString())
+        }
+
+        if (location == null) location = db.locationsDao().getLocationByUrl(url)
+        return location
     }
+    
 
     fun getEpisodesPagedSync(page: Int): List<Episode> {
         var episodes: List<Episode>? = null
@@ -93,8 +96,15 @@ class Repository private constructor(context: Context) {
         return episodes ?: listOf()
     }
 
-    fun getEpisodesByIds(ids: List<Int>): List<Episode> {
-        return TODO()
+    fun getEpisodeByUrlSync(url: String): Episode? {
+        var episode: Episode? = null
+        try {
+            episode = rickAndMortyService.getEpisodeByUrl(url)
+        }
+        catch (e: java.lang.Exception) { }
+
+        if (episode == null) episode = db.episodesDao().getEpisodeByUrl(url)
+        return episode
     }
 
     fun loadImageSync(imageUrl: String, name: String): Bitmap? {

@@ -37,6 +37,9 @@ interface PersonagesDao {
     @Query("SELECT * FROM Personage WHERE id BETWEEN (:page * 20 - 19) AND (:page * 20)")
     fun getPersonagesPaged(page: Int): List<Personage>?
 
+    @Query("SELECT * FROM Personage WHERE url = :url")
+    fun getPersonageByUrl(url: String): Personage?
+
     @Query("SELECT COUNT(id) FROM Personage")
     fun getPersonageCount(): Int
 }
@@ -53,6 +56,9 @@ interface LocationsDao {
     @Query("SELECT * FROM Location WHERE id BETWEEN (:page * 20 - 19) AND (:page * 20)")
     fun getLocationsPaged(page: Int): List<Location>?
 
+    @Query("SELECT * FROM Location WHERE url = :url")
+    fun getLocationByUrl(url: String): Location?
+
     @Query("SELECT COUNT(id) FROM Location")
     fun getLocationsCount(): Int
 }
@@ -68,6 +74,9 @@ interface EpisodesDao {
 
     @Query("SELECT * FROM Episode WHERE id BETWEEN (:page * 20 - 19) AND (:page * 20)")
     fun getEpisodesPaged(page: Int): List<Episode>?
+
+    @Query("SELECT * FROM Episode WHERE url = :url")
+    fun getEpisodeByUrl(url: String): Episode?
 
     @Query("SELECT COUNT(id) FROM Episode")
     fun getEpisodesCount(): Int

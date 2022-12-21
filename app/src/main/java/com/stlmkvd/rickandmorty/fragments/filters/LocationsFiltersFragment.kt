@@ -26,17 +26,31 @@ class LocationsFiltersFragment : Fragment() {
         binding.btnSubmit.setOnClickListener {
             submitSelections()
         }
+        binding.btnClear.setOnClickListener {
+            clearSelections()
+        }
     }
+
+
 
     private fun submitSelections() {
         val selection = Location.LocationsFilterSelection(
-            binding.etFilterName.text.toString(),
-            binding.etFilterType.text.toString(),
-            binding.etFilterDimension.text.toString()
+            binding.etNameHolder.editText!!.text.toString(),
+            binding.etTypeHolder.editText!!.text.toString(),
+            binding.etDimesionHolder.editText!!.text.toString()
         )
         val bundle = Bundle().apply {
             putSerializable(ARG_SELECTION, selection)
         }
-        parentFragmentManager.setFragmentResult(SUBMIT_SELECTIONS_REQUEST_KEY, bundle)
+        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_SELECTIONS, bundle)
+    }
+
+    private fun clearSelections() {
+        with(binding) {
+            etNameHolder.editText!!.text.clear()
+            etTypeHolder.editText!!.text.clear()
+            etDimesionHolder.editText!!.text.clear()
+        }
+        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_SELECTIONS, Bundle.EMPTY)
     }
 }

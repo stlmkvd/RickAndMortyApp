@@ -9,7 +9,7 @@ class LocationsViewModel : AbstractRickAndMortyVM<Location>() {
         return Repository.getInstance().getLocationsPagedSync(page)
     }
 
-    override fun loadItemsByIds(ids: List<Int>): List<Location> {
-        return Repository.getInstance().getLocationsByIdsSync(ids)
+    override fun loadItemByUrl(url: String): Location? {
+        return Repository.getInstance().getLocationByUrlSync(url)
     }
 }

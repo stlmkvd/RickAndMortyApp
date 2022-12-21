@@ -2,60 +2,48 @@ package com.stlmkvd.rickandmorty.fragments.overviews
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import com.stlmkvd.rickandmorty.BUNDLE_ARG_EPISODE
 import com.stlmkvd.rickandmorty.R
+import com.stlmkvd.rickandmorty.REQUEST_KEY_OPEN_EPISODE
 import com.stlmkvd.rickandmorty.adapters.recycler.AbstractAdapter
 import com.stlmkvd.rickandmorty.adapters.recycler.EpisodesAdapter
 import com.stlmkvd.rickandmorty.data.Episode
 import com.stlmkvd.rickandmorty.databinding.FragmentItemsListBinding
 import com.stlmkvd.rickandmorty.fragments.filters.ARG_SELECTION
 import com.stlmkvd.rickandmorty.fragments.filters.EpisodesFiltersFragment
-import com.stlmkvd.rickandmorty.fragments.filters.SUBMIT_SELECTIONS_REQUEST_KEY
-import com.stlmkvd.rickandmorty.model.AbstractRickAndMortyVM
+import com.stlmkvd.rickandmorty.fragments.filters.REQUEST_KEY_SUBMIT_SELECTIONS
 import com.stlmkvd.rickandmorty.model.EpisodesViewModel
 import com.stlmkvd.rickandmorty.setMenuProvider
 
 class EpisodesOverviewFragment
-    : Fragment(), AbstractRickAndMortyVM.OnRefreshCompleteCallback {
+    : Fragment() {
 
-    private lateinit var viewModel: EpisodesViewModel
+    private val viewModel: EpisodesViewModel by activityViewModels()
     private lateinit var binding: FragmentItemsListBinding
     private lateinit var adapter: EpisodesAdapter
-
-    private val menuProvider = object : MenuProvider {
-        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.toolbar_menu, menu)
-        }
-
-        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-            binding.slidingLayout.panelState = SlidingUpPanelLayout.PanelState.EXPANDED
-            return true
-        }
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this).get(EpisodesViewModel::class.java)
         binding = FragmentItemsListBinding.inflate(inflater, container, false)
         binding.recycler.layoutManager = GridLayoutManager(requireContext(), 2)
         adapter = EpisodesAdapter(viewModel)
-        binding.recycler.adapter = adapter
         adapter.onItemClickListener = AbstractAdapter.OnItemClickListener {
-            Toast.makeText(requireContext(), "episode ${it.id} clicked", Toast.LENGTH_SHORT).show()
+            val bundle = Bundle().apply { putSerializable(BUNDLE_ARG_EPISODE, it) }
+            parentFragmentManager.setFragmentResult(REQUEST_KEY_OPEN_EPISODE, bundle)
         }
+        binding.recycler.adapter = adapter
         binding.slidingLayout.apply {
-            isTouchEnabled = false
-            panelState = SlidingUpPanelLayout.PanelState.HIDDEN
+            setFadeOnClickListener {
+                panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+            }
         }
-        requireActivity().setMenuProvider(menuProvider, viewLifecycleOwner)
         childFragmentManager.beginTransaction()
             .replace(R.id.container_filters, EpisodesFiltersFragment::class.java, null).commit()
         return binding.root
@@ -66,30 +54,31 @@ class EpisodesOverviewFragment
         binding.swipeRefreshLayout.apply {
             setOnRefreshListener {
                 viewModel.refresh()
+                adapter.refresh()
+                this.isRefreshing = false //TODO replace with callback
             }
         }
-        viewModel.registerOnRefreshCompleteCallback(this)
     }
 
     override fun onStart() {
         super.onStart()
         childFragmentManager.setFragmentResultListener(
-            SUBMIT_SELECTIONS_REQUEST_KEY,
+            REQUEST_KEY_SUBMIT_SELECTIONS,
             viewLifecycleOwner
         ) { _, bundle ->
-            val filters =
+            val filter =
                 bundle.getSerializable(ARG_SELECTION) as? Episode.EpisodesFilterSelection
-            viewModel.submitFilters(filters)
-            binding.slidingLayout.panelState = SlidingUpPanelLayout.PanelState.HIDDEN
+            adapter.filter = filter
+            binding.slidingLayout.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.removeOnRefreshCompleteCallback(this)
-    }
-
-    override fun onRefreshComplete() {
-        binding.swipeRefreshLayout.isRefreshing = false
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        viewModel.removeOnRefreshCompleteCallback(this)
+//    }
+//
+//    override fun onRefreshComplete() {
+//        binding.swipeRefreshLayout.isRefreshing = false
+//    }
 }
