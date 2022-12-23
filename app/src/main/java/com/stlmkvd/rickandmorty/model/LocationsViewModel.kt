@@ -3,13 +3,13 @@ package com.stlmkvd.rickandmorty.model
 import com.stlmkvd.rickandmorty.Repository
 import com.stlmkvd.rickandmorty.data.Location
 
-class LocationsViewModel : AbstractRickAndMortyVM<Location>() {
+class LocationsViewModel : BaseViewModel<Location>() {
 
-    override fun loadPage(page: Int): List<Location> {
-        return Repository.getInstance().getLocationsPagedSync(page)
+    override suspend fun loadItemsPagedSync(pageNum: Int): List<Location>? {
+        return Repository.getInstance().getLocationsPagedSync(pageNum)
     }
 
-    override fun loadItemByUrl(url: String): Location? {
+    override suspend fun loadItemByUrl(url: String): Location? {
         return Repository.getInstance().getLocationByUrlSync(url)
     }
 }

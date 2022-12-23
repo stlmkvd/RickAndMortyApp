@@ -13,7 +13,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_name_hint"
@@ -109,21 +110,18 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_dimension_hint"
             tools:text="dimension" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/container_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:background="?attr/colorPrimaryVariant"
-            android:clipToPadding="false"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_dimension_hint2"
-            app:spanCount="2"
-            tools:listitem="@layout/viewholder_personage" />
+            android:name="com.stlmkvd.rickandmorty.fragments.list.PersonagesListFragment"
+            tools:layout="@layout/recycler_list_fragment" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"

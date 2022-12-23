@@ -30,7 +30,15 @@ data class Location(
             if (dimension.isNotBlank() && !item.dimension.contains(dimension, true)) return false
             return true
         }
+
+        companion object {
+            const val BUNDLE_ARG = "LOCATION_FILTER_SELECTION_BUNDLE_ARG"
+        }
     }
 
     data class Info(val name: String, val url: String) : java.io.Serializable
+
+    companion object {
+        const val BUNDLE_ARG = "LOCATION_BUNDLE_ARG"
+    }
 }

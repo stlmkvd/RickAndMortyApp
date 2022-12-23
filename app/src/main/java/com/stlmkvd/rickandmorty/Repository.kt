@@ -3,7 +3,6 @@ package com.stlmkvd.rickandmorty
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.room.Room
 import com.stlmkvd.rickandmorty.data.DataItem
 import com.stlmkvd.rickandmorty.data.Episode
@@ -27,90 +26,92 @@ class Repository private constructor(context: Context) {
         Room.databaseBuilder(context, AppDatabase::class.java, "items_database").build()
     private val rickAndMortyService by lazy { RickAndMortyApi.service }
 
-    fun getPersonagesPagedSync(page: Int): List<Personage> {
-        
-        var personages: List<Personage>? = null
-        try {
-            personages = rickAndMortyService.getPersonagesPage(page).execute().body()?.personages
-        } catch (e: java.lang.Exception) {
+    suspend fun getPersonagesPagedSync(page: Int): List<Personage>? {
 
-        }
+        var personages: List<Personage>? =
+            try {
+                rickAndMortyService.getPersonagesPage(page)?.personages
+            } catch (e: java.lang.Exception) {
+                null
+            }
 
         if (personages != null) db.personagesDao().insertAll(personages)
         else personages = db.personagesDao().getPersonagesPaged(page)
 
-        return personages ?: emptyList()
+        return personages
     }
 
-    fun getPersonageByUrlSync(url: String): Personage? {
-        var personage: Personage? = null
-        try {
-            personage = rickAndMortyService.getPersonageByUrl(url)
-        }
-        catch (e: java.lang.Exception) { }
-        
+    suspend fun getPersonageByUrlSync(url: String): Personage? {
+        var personage: Personage? =
+            try {
+                rickAndMortyService.getPersonageByUrl(url)
+            } catch (e: java.lang.Exception) {
+                null
+            }
+
         if (personage == null) personage = db.personagesDao().getPersonageByUrl(url)
         return personage
     }
-    
 
-    fun getLocationsPagedSync(page: Int): List<Location> {
-        var locations: List<Location>? = null
-        try {
-            locations = rickAndMortyService.getLocationsPage(page).execute().body()?.locations
-        } catch (e: IOException) {
 
-        }
+    suspend fun getLocationsPagedSync(page: Int): List<Location>? {
+        var locations: List<Location>? =
+            try {
+                rickAndMortyService.getLocationsPage(page)?.locations
+            } catch (e: java.lang.Exception) {
+                null
+            }
 
         if (locations != null) {
             db.locationsDao().insertAll(locations)
         } else locations = db.locationsDao().getLocationsPaged(page)
 
-        return locations ?: emptyList()
+        return locations
     }
 
-    fun getLocationByUrlSync(url: String): Location? {
-        var location: Location? = null
-        try {
-            location = rickAndMortyService.getLocationByUrl(url)
-        }
-        catch (e: java.lang.Exception) {
-            Log.e(TAG, e?.localizedMessage.toString())
-        }
+    suspend fun getLocationByUrlSync(url: String): Location? {
+        var location: Location? =
+            try {
+                rickAndMortyService.getLocationByUrl(url)
+            } catch (e: java.lang.Exception) {
+                null
+            }
 
         if (location == null) location = db.locationsDao().getLocationByUrl(url)
         return location
     }
-    
 
-    fun getEpisodesPagedSync(page: Int): List<Episode> {
-        var episodes: List<Episode>? = null
-        try {
-            episodes = rickAndMortyService.getEpisodesPage(page).execute().body()?.episodes
-        } catch (e: IOException) {
-        }
+
+    suspend fun getEpisodesPagedSync(page: Int): List<Episode>? {
+        var episodes: List<Episode>? =
+            try {
+                rickAndMortyService.getEpisodesPage(page)?.episodes
+            } catch (e: java.lang.Exception) {
+                null
+            }
 
         if (episodes != null) db.episodesDao().insertAll(episodes)
         else episodes = db.episodesDao().getEpisodesPaged(page)
 
-        return episodes ?: listOf()
+        return episodes
     }
 
-    fun getEpisodeByUrlSync(url: String): Episode? {
-        var episode: Episode? = null
-        try {
-            episode = rickAndMortyService.getEpisodeByUrl(url)
-        }
-        catch (e: java.lang.Exception) { }
+    suspend fun getEpisodeByUrlSync(url: String): Episode? {
+        var episode: Episode? =
+            try {
+                rickAndMortyService.getEpisodeByUrl(url)
+            } catch (e: java.lang.Exception) {
+                null
+            }
 
         if (episode == null) episode = db.episodesDao().getEpisodeByUrl(url)
         return episode
     }
 
-    fun loadImageSync(imageUrl: String, name: String): Bitmap? {
+    suspend fun loadImageSync(imageUrl: String, name: String): Bitmap? {
         var bitmap: Bitmap? = try {
             BitmapFactory.decodeStream(
-                rickAndMortyService.downloadImage(imageUrl).execute().body()?.byteStream()
+                rickAndMortyService.downloadImage(imageUrl)?.byteStream()
             )
         } catch (e: java.lang.Exception) {
             null
@@ -121,17 +122,18 @@ class Repository private constructor(context: Context) {
         return bitmap
     }
 
-    private fun loadImageFromStorage(name: String): Bitmap? {
+    private suspend fun loadImageFromStorage(name: String): Bitmap? {
         val imageFile = imagesDir.listFiles()?.find { it.name == name } ?: return null
         return BitmapFactory.decodeStream(FileInputStream(imageFile))
     }
 
-    private fun saveImageToStorage(name: String, bitmap: Bitmap) {
+    private suspend fun saveImageToStorage(name: String, bitmap: Bitmap) {
         val file = File(imagesDir, name)
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
         file.writeBytes(baos.toByteArray())
     }
+
 
     companion object {
         private var instance: Repository? = null

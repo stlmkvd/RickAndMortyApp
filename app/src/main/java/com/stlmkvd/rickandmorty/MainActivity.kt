@@ -1,17 +1,21 @@
 package com.stlmkvd.rickandmorty
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
+import com.stlmkvd.rickandmorty.data.DataItem
+import com.stlmkvd.rickandmorty.data.Episode
+import com.stlmkvd.rickandmorty.data.Location
+import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.databinding.ActivityMainBinding
 import com.stlmkvd.rickandmorty.fragments.details.EpisodeDetailsFragment
 import com.stlmkvd.rickandmorty.fragments.details.LocationDetailsFragment
@@ -20,13 +24,8 @@ import com.stlmkvd.rickandmorty.fragments.overviews.EpisodesOverviewFragment
 import com.stlmkvd.rickandmorty.fragments.overviews.LocationsOverviewFragment
 import com.stlmkvd.rickandmorty.fragments.overviews.PersonagesOverviewFragment
 
-const val REQUEST_KEY_OPEN_PERSONAGE = "open_personage"
-const val REQUEST_KEY_OPEN_LOCATION = "open_location"
 const val REQUEST_KEY_OPEN_EPISODE = "open_episode"
-
-const val BUNDLE_ARG_PERSONAGE = "PERSONAGE"
-const val BUNDLE_ARG_EPISODE = "EPISODE"
-const val BUNDLE_ARG_LOCATION = "LOCATION"
+const val REQUEST_KEY_OPEN_DETAILS = "open_details"
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,56 +34,87 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.d("jhgdd", "onCreate()")
+
+        supportFragmentManager.addOnBackStackChangedListener {
+
+            Log.d("hfdsgjf", "backstack length = ${supportFragmentManager.backStackEntryCount}")
+
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportActionBar?.apply {
+                    setDisplayHomeAsUpEnabled(true)
+                    setDisplayShowHomeEnabled(true)
+                }
+            } else supportActionBar?.apply {
+                setDisplayHomeAsUpEnabled(false)
+                setDisplayShowHomeEnabled(false)
+            }
+        }
+
+//        onBackPressedDispatcher.addCallback {
+//            supportFragmentManager.popBackStack()
+//            var validBottomNavItem: Int? =
+//                when (supportFragmentManager.findFragmentById(binding.fragmentContainer.id)) {
+//                    is PersonagesOverviewFragment -> R.id.nav_item_personages
+//                    is LocationsOverviewFragment -> R.id.nav_item_locations
+//                    is EpisodesOverviewFragment -> R.id.nav_item_episodes
+//                    else -> null
+//                }
+//            validBottomNavItem?.let {
+//                binding.bottomNavigationView.selectedItemId = validBottomNavItem
+//            }
+//        }
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-//        setSupportActionBar(binding.toolbar)
     }
+
+
 
     override fun onStart() {
         super.onStart()
+
         binding.bottomNavigationView.setOnItemSelectedListener { menuitem ->
-            val replacement: Class<out Fragment> = when (menuitem.itemId) {
-                R.id.nav_item_personages -> PersonagesOverviewFragment::class.java
-                R.id.nav_item_locations -> LocationsOverviewFragment::class.java
-                R.id.nav_item_episodes -> EpisodesOverviewFragment::class.java
+            val replacement: Fragment = when (menuitem.itemId) {
+                R.id.nav_item_personages -> PersonagesOverviewFragment()
+                R.id.nav_item_locations -> LocationsOverviewFragment()
+                R.id.nav_item_episodes -> EpisodesOverviewFragment()
                 else -> throw java.lang.UnsupportedOperationException()
             }
+
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragment_container, replacement, null)
+                .replace(binding.fragmentContainer.id, replacement, null)
+                .setReorderingAllowed(true)
                 .commit()
             true
         }
 
         supportFragmentManager.setFragmentResultListener(
-            REQUEST_KEY_OPEN_PERSONAGE,
+            REQUEST_KEY_OPEN_DETAILS,
             this
         ) { _, bundle ->
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragment_container,
-                    PersonageDetailsFragment.newInstance(bundle),
-                    null
-                )
-                .addToBackStack("open_personage").commit()
+            val replacement = when (bundle[DataItem.BUNDLE_ARG]) {
+                is Personage -> PersonageDetailsFragment.createInstance(bundle)
+                is Location -> LocationDetailsFragment.createInstance(bundle)
+                is Episode -> EpisodeDetailsFragment.createInstance(bundle)
+                else -> throw java.lang.UnsupportedOperationException()
+            }
+            supportFragmentManager
+                .beginTransaction()
+                .replace(binding.fragmentContainer.id, replacement)
+                .addToBackStack("open_details")
+                .setReorderingAllowed(true)
+                .commit()
         }
+        Log.d("jhgdd", "onStart()")
+    }
 
-        supportFragmentManager.setFragmentResultListener(
-            REQUEST_KEY_OPEN_LOCATION,
-            this
-        ) { _, bundle ->
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, LocationDetailsFragment.newInstance(bundle), null)
-                .addToBackStack("open_location").commit()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
         }
-
-        supportFragmentManager.setFragmentResultListener(
-            REQUEST_KEY_OPEN_EPISODE,
-            this
-        ) { _, bundle ->
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, EpisodeDetailsFragment.newInstance(bundle), null)
-                .addToBackStack("open_episode").commit()
-        }
+        return true
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -95,10 +125,5 @@ class MainActivity : AppCompatActivity() {
         }
         return super.dispatchTouchEvent(ev)
     }
-}
-
-fun Activity.setMenuProvider(menuProvider: MenuProvider, lifecycleOwner: LifecycleOwner) {
-    val menuHost = this as MenuHost
-    menuHost.addMenuProvider(menuProvider, lifecycleOwner)
 }
 

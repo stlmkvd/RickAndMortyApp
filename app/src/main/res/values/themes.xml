@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="android:windowActionBarOverlay">true</item>
 
-        <item name="android:windowBackground">@color/lightGreen</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
 
     </style>
 </resources>

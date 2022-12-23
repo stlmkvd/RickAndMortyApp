@@ -1,8 +1,6 @@
 package com.stlmkvd.rickandmorty.data
 
-import android.graphics.Bitmap
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.*
@@ -26,11 +24,11 @@ data class Personage(
         get() = "personage_$id.jpg"
 
 
-    data class PersonageFilterSelection(
+    data class FilterSelection(
         val name: String,
         val species: String,
         val type: String,
-        ) : DataItem.FilterSelection<Personage> {
+    ) : DataItem.FilterSelection<Personage> {
 
         val TAG = "PersonageFilterSelection"
 
@@ -50,7 +48,7 @@ data class Personage(
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
 
-            other as PersonageFilterSelection
+            other as FilterSelection
 
             if (name != other.name) return false
             if (species != other.species) return false
@@ -71,8 +69,11 @@ data class Personage(
             result = 31 * result + genders.hashCode()
             return result
         }
-    }
 
+        companion object {
+            const val BUNDLE_ARG = "PERSONAGE_FILTER_SELECTION_BUNDLE_ARG"
+        }
+    }
 
 
     companion object {
@@ -83,5 +84,7 @@ data class Personage(
         const val GENDER_FEMALE = "Female"
         const val GENDER_GENDERLESS = "Genderless"
         const val GENDER_UNKNOWN = "unknown"
+
+        const val BUNDLE_ARG = "PERSONAGE_BUNDLE_ARG"
     }
 }

@@ -30,6 +30,14 @@ data class Episode(
             ) return false
             return true
         }
+
+        companion object {
+            const val BUNDLE_ARG = "EPISODE_FILTER_SELECTION_BUNDLE_ARG"
+        }
+    }
+
+    companion object {
+        const val BUNDLE_ARG = "EPISODE_BUNDLE_ARG"
     }
 
 }

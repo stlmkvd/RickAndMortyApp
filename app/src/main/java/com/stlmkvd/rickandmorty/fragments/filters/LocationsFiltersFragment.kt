@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.stlmkvd.rickandmorty.data.DataItem
 import com.stlmkvd.rickandmorty.data.Location
 import com.stlmkvd.rickandmorty.databinding.FragmentLocationsFiltersBinding
+import com.stlmkvd.rickandmorty.fragments.list.REQUEST_KEY_SUBMIT_FILTERS
 
 
-class LocationsFiltersFragment : Fragment() {
+class LocationsFiltersFragment : BaseFiltersFragment<Location>() {
 
     private lateinit var binding: FragmentLocationsFiltersBinding
 
@@ -25,32 +26,33 @@ class LocationsFiltersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSubmit.setOnClickListener {
             submitSelections()
+            requestClosePanel()
         }
         binding.btnClear.setOnClickListener {
             clearSelections()
+            requestClosePanel()
         }
     }
 
 
-
-    private fun submitSelections() {
+    override fun submitSelections() {
         val selection = Location.LocationsFilterSelection(
             binding.etNameHolder.editText!!.text.toString(),
             binding.etTypeHolder.editText!!.text.toString(),
             binding.etDimesionHolder.editText!!.text.toString()
         )
         val bundle = Bundle().apply {
-            putSerializable(ARG_SELECTION, selection)
+            putSerializable(DataItem.FilterSelection.BUNDLE_ARG, selection)
         }
-        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_SELECTIONS, bundle)
+        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_FILTERS, bundle)
     }
 
-    private fun clearSelections() {
+    override fun clearSelections() {
         with(binding) {
             etNameHolder.editText!!.text.clear()
             etTypeHolder.editText!!.text.clear()
             etDimesionHolder.editText!!.text.clear()
         }
-        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_SELECTIONS, Bundle.EMPTY)
+        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_FILTERS, Bundle.EMPTY)
     }
 }

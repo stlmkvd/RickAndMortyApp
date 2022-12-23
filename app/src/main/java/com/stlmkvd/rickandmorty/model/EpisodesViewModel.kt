@@ -3,13 +3,13 @@ package com.stlmkvd.rickandmorty.model
 import com.stlmkvd.rickandmorty.Repository
 import com.stlmkvd.rickandmorty.data.Episode
 
-class EpisodesViewModel : AbstractRickAndMortyVM<Episode>() {
+class EpisodesViewModel : BaseViewModel<Episode>() {
 
-    override fun loadPage(page: Int): List<Episode> {
-        return Repository.getInstance().getEpisodesPagedSync(page)
+    override suspend fun loadItemsPagedSync(pageNum: Int): List<Episode>? {
+        return Repository.getInstance().getEpisodesPagedSync(pageNum)
     }
 
-    override fun loadItemByUrl(url: String): Episode? {
+    override suspend fun loadItemByUrl(url: String): Episode? {
         return Repository.getInstance().getEpisodeByUrlSync(url)
     }
 }

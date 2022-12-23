@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.stlmkvd.rickandmorty.data.DataItem
 import com.stlmkvd.rickandmorty.data.Personage
 import com.stlmkvd.rickandmorty.databinding.FragmentPersonagesFiltersBinding
+import com.stlmkvd.rickandmorty.fragments.list.REQUEST_KEY_SUBMIT_FILTERS
 
-const val REQUEST_KEY_SUBMIT_SELECTIONS = "SUBMIT_SELECTIONS"
-const val ARG_SELECTION = "ARG_SELECTION"
+
 private const val TAG = "PersonagesFiltersFragment"
 
-class PersonagesFiltersFragment : Fragment() {
+class PersonagesFiltersFragment : BaseFiltersFragment<Personage>() {
 
     private lateinit var binding: FragmentPersonagesFiltersBinding
 
@@ -28,14 +28,16 @@ class PersonagesFiltersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSubmit.setOnClickListener {
             submitSelections()
+            requestClosePanel()
         }
         binding.btnClear.setOnClickListener {
             clearSelections()
+            requestClosePanel()
         }
     }
 
-    private fun submitSelections() {
-        val selection = Personage.PersonageFilterSelection(
+    override fun submitSelections() {
+        val selection = Personage.FilterSelection(
             name = binding.etNameHolder.editText!!.text.toString(),
             species = binding.etSpeciesHolder.editText!!.text.toString(),
             type = binding.etTypeHolder.editText!!.text.toString()
@@ -52,12 +54,12 @@ class PersonagesFiltersFragment : Fragment() {
             if (binding.cbFilterGenderUnknown.isChecked) add(Personage.GENDER_UNKNOWN)
         }
         val bundle = Bundle().apply {
-            putSerializable(ARG_SELECTION, selection)
+            putSerializable(DataItem.FilterSelection.BUNDLE_ARG, selection)
         }
-        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_SELECTIONS, bundle)
+        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_FILTERS, bundle)
     }
 
-    private fun clearSelections() {
+    override fun clearSelections() {
         with(binding) {
             etNameHolder.editText!!.text.clear()
             cbFilterStatusAlive.isChecked = true
@@ -66,7 +68,7 @@ class PersonagesFiltersFragment : Fragment() {
             etSpeciesHolder.editText!!.text.clear()
             etTypeHolder.editText!!.text.clear()
         }
-        val bundle = Bundle().apply { putSerializable(ARG_SELECTION, null) }
-        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_SELECTIONS, bundle)
+        val bundle = Bundle().apply { putSerializable(DataItem.FilterSelection.BUNDLE_ARG, null) }
+        parentFragmentManager.setFragmentResult(REQUEST_KEY_SUBMIT_FILTERS, bundle)
     }
 }

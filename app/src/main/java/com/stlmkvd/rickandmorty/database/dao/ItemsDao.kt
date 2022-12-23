@@ -29,55 +29,55 @@ import com.stlmkvd.rickandmorty.data.Personage
 interface PersonagesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(personages: List<Personage>)
+    suspend fun insertAll(personages: List<Personage>)
 
     @Query("SELECT * FROM Personage WHERE id IN (:ids)")
-    fun getPersonagesByIds(ids: List<Int>): List<Personage>
+    suspend fun getPersonagesByIds(ids: List<Int>): List<Personage>
 
     @Query("SELECT * FROM Personage WHERE id BETWEEN (:page * 20 - 19) AND (:page * 20)")
-    fun getPersonagesPaged(page: Int): List<Personage>?
+    suspend fun getPersonagesPaged(page: Int): List<Personage>?
 
     @Query("SELECT * FROM Personage WHERE url = :url")
-    fun getPersonageByUrl(url: String): Personage?
+    suspend fun getPersonageByUrl(url: String): Personage?
 
     @Query("SELECT COUNT(id) FROM Personage")
-    fun getPersonageCount(): Int
+    suspend fun getPersonageCount(): Int
 }
 
 @Dao
 interface LocationsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(locations: List<Location>)
+    suspend fun insertAll(locations: List<Location>)
 
     @Query("SELECT * FROM Location WHERE id IN (:ids)")
-    fun getLocationsByIds(ids: List<Int>): List<Location>
+    suspend fun getLocationsByIds(ids: List<Int>): List<Location>
 
     @Query("SELECT * FROM Location WHERE id BETWEEN (:page * 20 - 19) AND (:page * 20)")
-    fun getLocationsPaged(page: Int): List<Location>?
+    suspend fun getLocationsPaged(page: Int): List<Location>?
 
     @Query("SELECT * FROM Location WHERE url = :url")
-    fun getLocationByUrl(url: String): Location?
+    suspend fun getLocationByUrl(url: String): Location?
 
     @Query("SELECT COUNT(id) FROM Location")
-    fun getLocationsCount(): Int
+    suspend fun getLocationsCount(): Int
 }
 
 @Dao
 interface EpisodesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(locations: List<Episode>)
+    suspend fun insertAll(locations: List<Episode>)
 
     @Query("SELECT * FROM Episode WHERE id IN (:ids)")
-    fun getEpisodesByIds(ids: List<Int>): List<Episode>
+    suspend fun getEpisodesByIds(ids: List<Int>): List<Episode>
 
     @Query("SELECT * FROM Episode WHERE id BETWEEN (:page * 20 - 19) AND (:page * 20)")
-    fun getEpisodesPaged(page: Int): List<Episode>?
+    suspend fun getEpisodesPaged(page: Int): List<Episode>?
 
     @Query("SELECT * FROM Episode WHERE url = :url")
-    fun getEpisodeByUrl(url: String): Episode?
+    suspend fun getEpisodeByUrl(url: String): Episode?
 
     @Query("SELECT COUNT(id) FROM Episode")
-    fun getEpisodesCount(): Int
+    suspend fun getEpisodesCount(): Int
 }
