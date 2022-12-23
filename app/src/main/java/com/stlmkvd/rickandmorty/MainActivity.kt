@@ -2,16 +2,15 @@ package com.stlmkvd.rickandmorty
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.stlmkvd.rickandmorty.data.DataItem
 import com.stlmkvd.rickandmorty.data.Episode
 import com.stlmkvd.rickandmorty.data.Location
@@ -35,12 +34,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.d("jhgdd", "onCreate()")
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         supportFragmentManager.addOnBackStackChangedListener {
-
-            Log.d("hfdsgjf", "backstack length = ${supportFragmentManager.backStackEntryCount}")
-
             if (supportFragmentManager.backStackEntryCount > 0) {
                 supportActionBar?.apply {
                     setDisplayHomeAsUpEnabled(true)
@@ -66,9 +62,7 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
     }
-
 
 
     override fun onStart() {
@@ -81,6 +75,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_item_episodes -> EpisodesOverviewFragment()
                 else -> throw java.lang.UnsupportedOperationException()
             }
+
+            supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             supportFragmentManager
                 .beginTransaction()
@@ -107,7 +103,6 @@ class MainActivity : AppCompatActivity() {
                 .setReorderingAllowed(true)
                 .commit()
         }
-        Log.d("jhgdd", "onStart()")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

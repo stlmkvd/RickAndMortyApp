@@ -21,7 +21,6 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/container_list"
-                android:name="com.stlmkvd.rickandmorty.fragments.overviews.PersonagesOverviewFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:layout="@layout/recycler_list_fragment" />

@@ -11,9 +11,9 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container"
-            android:name="com.stlmkvd.rickandmorty.fragments.overviews.PersonagesOverviewFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:name="com.stlmkvd.rickandmorty.fragments.overviews.PersonagesOverviewFragment"
             app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
