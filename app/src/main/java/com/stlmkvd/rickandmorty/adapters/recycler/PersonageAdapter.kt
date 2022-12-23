@@ -35,7 +35,10 @@ open class PersonageAdapter(
             binding.image.setImageBitmap(null)
             binding.progressBar.visibility = View.VISIBLE
             viewModel.loadImage(item.imageUrl, item.imageFileName) {
-                binding.image.setImageBitmap(it)
+                if (it == null) {
+                    binding.image.setImageResource(R.drawable.download_image_error)
+                }
+                else binding.image.setImageBitmap(it)
                 binding.progressBar.visibility = View.GONE
             }
             binding.personage = item
